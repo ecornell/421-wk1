@@ -25,12 +25,16 @@ public class Track {
             throw new AssignRunnerException("Invalid lane number - " + laneNumber);
         }
 
-        if (lanes[laneNumber] != null) {
+        if (lanes[laneNumber - 1] != null) {
             throw new AssignRunnerException("Lane number already assigned - " + laneNumber);
         }
 
-        lanes[laneNumber] = runner;
+        lanes[laneNumber - 1] = runner;
 
+    }
+
+    public String[] getLaneAssignments() {
+        return lanes;
     }
 
     public void clearLaneAssignments() {

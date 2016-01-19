@@ -11,11 +11,18 @@ public class Main {
 
     private void runTrackAssignment() throws IOException {
 
+        System.out.print("" +
+                "================================\n" +
+                " Track Lane Assignment Manager\n" +
+                " POS-421 - Wk1 - Elijah Cornell\n" +
+                "================================"
+        );
+
+
         String menuSelection;
 
         do {
-            menuSelection = readInputString("\n\nA: Add another runner\nL: List current runners\nX: Exit\nMenu selection (A/L/X) : ");
-
+            menuSelection = readInputString("\n\nA: Assign runner to lane\nL: List current lane assignments\nX: Exit\nMenu selection (A/L/X) : ");
 
             if (menuSelection.equalsIgnoreCase("A")) {
 
@@ -23,16 +30,18 @@ public class Main {
                 try {
 
                     int lane = readInputInt("\nEnter lane number: ");
-                    String name = readInputString("\nEnter the runners name: ");
+                    String name = readInputString("\nEnter runner's name: ");
 
                     track.assignRunner(lane, name);
 
                 } catch (NumberFormatException nfe) {
                     System.out.println("\nError: Invalid lane number");
-                } catch (AssignRunnerException assignRunnerExcption) {
-                    System.out.println("\nError: " + assignRunnerExcption.getMessage());
+                } catch (AssignRunnerException assignRunnerException) {
+                    System.out.println("\nError: " + assignRunnerException.getMessage());
                 }
 
+
+                printLaneAssignments();
 
             } else if (menuSelection.equalsIgnoreCase("L")) {
 
@@ -42,6 +51,19 @@ public class Main {
 
         } while (!menuSelection.equalsIgnoreCase("X"));
 
+
+    }
+
+    private void printLaneAssignments() {
+
+        System.out.print("\nCurrent Lane Assignments\n========================\n");
+
+        String[] laneAssignments = track.getLaneAssignments();
+        for (int i = 0; i < laneAssignments.length ; i++) {
+            System.out.print(" " + (i+1) + " : " + (laneAssignments[i] != null ? laneAssignments[i] : "Open")  + "\n");
+        }
+
+        System.out.print("========================\n");
 
     }
 
@@ -61,7 +83,6 @@ public class Main {
         try {
             m.runTrackAssignment();
         } catch (IOException e) {
-
             e.printStackTrace();
         }
     }
