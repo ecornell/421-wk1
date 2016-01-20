@@ -2,9 +2,9 @@ package ecornell.wk1.singleton;
 
 public class Main {
 
-    private UI ui = UI.getInstance();
+    private final UI ui = UI.getInstance();
 
-    private TrackManager trackManager = TrackManager.getTrackInstance();
+    private final TrackManager trackManager = TrackManager.getTrackInstance();
 
     private void mainLoop() {
 
@@ -60,11 +60,12 @@ public class Main {
 
             StringBuilder sbAvailableLanes = new StringBuilder();
             for (int i = 1; i <= trackManager.getNumLanes(); i++) {
-                if (trackManager.isLaneAvailabile(i)) {
-                    sbAvailableLanes.append(i + " ");
+                if (trackManager.isLaneAvailable(i)) {
+                    sbAvailableLanes.append(" ");
+                    sbAvailableLanes.append(i);
                 }
             }
-            ui.display("Open lanes: " + sbAvailableLanes);
+            ui.display("Open lanes:" + sbAvailableLanes);
             ui.spacer();
 
         } catch (AssignRunnerException assignRunnerException) {
@@ -74,7 +75,7 @@ public class Main {
 
         // Set lane number
 
-        int lane = 0;
+        int lane;
 
         do {
             try {
@@ -82,7 +83,10 @@ public class Main {
                 ui.displayPrompt("Enter lane number: ");
                 lane = ui.readInputInt();
 
-                trackManager.isLaneAvailabile(lane);
+                if (!trackManager.isLaneAvailable(lane)) {
+                    ui.displayError("Lane " + lane + " is already assigned to " + trackManager.getLaneAssignment(lane));
+                    lane = 0;
+                }
 
             } catch (NumberFormatException nfe) {
                 ui.displayError("Invalid lane number");
@@ -96,7 +100,7 @@ public class Main {
 
         // Set runner's name
 
-        String runnerName = "";
+        String runnerName;
         do {
             ui.displayPrompt("Enter runner's name: ");
             runnerName = ui.readInputString();

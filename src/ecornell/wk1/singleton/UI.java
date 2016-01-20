@@ -11,7 +11,7 @@ public class UI {
 
     private static final UI SINGLETON = new UI();
 
-    public static final String newLine = System.lineSeparator();
+    private static final String newLine = System.lineSeparator();
 
     public static UI getInstance() {
         return SINGLETON;
@@ -53,7 +53,9 @@ public class UI {
     }
 
     public void displayError(String text) {
-        display("!!!  ERROR: " + text + "  !!!");
+        spacer();
+        display("!!!  ERROR: " + text);
+        spacer();
     }
 
     public String readInputString()  {

@@ -10,7 +10,7 @@ public class TrackManager {
     private int numLanes;
     private String[] lanes;
 
-    public final static String OPEN_LANE_INDICATOR = "-";
+    private final static String OPEN_LANE_INDICATOR = "-";
 
     private TrackManager(int numLanes) {
         this.numLanes = numLanes;
@@ -28,7 +28,7 @@ public class TrackManager {
             throw new AssignRunnerException("Invalid lane number - " + laneNumber);
         }
 
-        if (!isLaneAvailabile(laneNumber)) {
+        if (!isLaneAvailable(laneNumber)) {
             throw new AssignRunnerException("Lane number already assigned - " + laneNumber);
         }
 
@@ -42,7 +42,7 @@ public class TrackManager {
         }
     }
 
-    public boolean isLaneAvailabile(int laneNumber) throws AssignRunnerException {
+    public boolean isLaneAvailable(int laneNumber) throws AssignRunnerException {
         if (laneNumber < 1 || laneNumber > numLanes) {
             throw new AssignRunnerException("Invalid lane number - " + laneNumber);
         }
@@ -52,7 +52,7 @@ public class TrackManager {
     public boolean hasOpenLane() {
         try {
             for (int i = 1; i <= numLanes; i++) {
-                if (isLaneAvailabile(i)) {
+                if (isLaneAvailable(i)) {
                     return true;
                 }
             }
@@ -64,6 +64,13 @@ public class TrackManager {
 
     public String[] getLaneAssignments() {
         return lanes;
+    }
+
+    public String getLaneAssignment(int laneNumber) throws AssignRunnerException {
+        if (laneNumber < 1 || laneNumber > numLanes) {
+            throw new AssignRunnerException("Invalid lane number - " + laneNumber);
+        }
+        return lanes[laneNumber - 1];
     }
 
     public int getNumLanes() {
