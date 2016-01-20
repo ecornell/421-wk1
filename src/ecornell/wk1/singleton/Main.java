@@ -96,8 +96,11 @@ public class Main {
 
         // Set runner's name
 
-        ui.displayPrompt("Enter runner's name: ");
-        String runnerName = ui.readInputString();
+        String runnerName = "";
+        do {
+            ui.displayPrompt("Enter runner's name: ");
+            runnerName = ui.readInputString();
+        } while ("".equals(runnerName));
 
         // Store lane and runner assignment
 
