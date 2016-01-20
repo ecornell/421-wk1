@@ -1,90 +1,145 @@
 package ecornell.wk1.singleton;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 public class Main {
 
-    private Track track = Track.getTrackInstance();
+    private UI ui = UI.getInstance();
 
+    private TrackManager trackManager = TrackManager.getTrackInstance();
 
-    private void runTrackAssignment() throws IOException {
+    private void mainLoop() {
 
-        System.out.print("" +
-                "================================\n" +
-                " Track Lane Assignment Manager\n" +
-                " POS-421 - Wk1 - Elijah Cornell\n" +
-                "================================"
-        );
-
+        ui.display("========================================");
+        ui.display("|    Track Lane Assignment Manager     |");
+        ui.display("|    POS-421 - Wk1 - Elijah Cornell    |");
+        ui.display("========================================");
 
         String menuSelection;
 
         do {
-            menuSelection = readInputString("\n\nA: Assign runner to lane\nL: List current lane assignments\nX: Exit\nMenu selection (A/L/X) : ");
+
+            ui.displayTitle("Main Menu");
+
+            ui.display("A: Assign runner to lane");
+            ui.display("L: List current lane assignments");
+            ui.display("R: Reset lane assignments");
+            ui.display("X: Exit");
+            ui.displayPrompt("Menu selection (A/L/R/X) : ");
+
+
+            menuSelection = ui.readInputString();
 
             if (menuSelection.equalsIgnoreCase("A")) {
 
-
-                try {
-
-                    int lane = readInputInt("\nEnter lane number: ");
-                    String name = readInputString("\nEnter runner's name: ");
-
-                    track.assignRunner(lane, name);
-
-                } catch (NumberFormatException nfe) {
-                    System.out.println("\nError: Invalid lane number");
-                } catch (AssignRunnerException assignRunnerException) {
-                    System.out.println("\nError: " + assignRunnerException.getMessage());
-                }
-
-
-                printLaneAssignments();
+                assignLane();
 
             } else if (menuSelection.equalsIgnoreCase("L")) {
 
+                displayLaneAssignments();
+
+            } else if (menuSelection.equalsIgnoreCase("R")) {
+
+                resetLaneAssignments();
 
             }
 
-
         } while (!menuSelection.equalsIgnoreCase("X"));
 
+    }
 
+    private void assignLane() {
+
+        ui.displayTitle("Lane Assignment");
+
+
+        if (!trackManager.hasOpenLane()) {
+            ui.displayError("No open lanes available");
+            return;
+        }
+
+        try {
+
+            StringBuilder sbAvailableLanes = new StringBuilder();
+            for (int i = 1; i <= trackManager.getNumLanes(); i++) {
+                if (trackManager.isLaneAvailabile(i)) {
+                    sbAvailableLanes.append(i + " ");
+                }
+            }
+            ui.display("Open lanes: " + sbAvailableLanes);
+            ui.spacer();
+
+        } catch (AssignRunnerException assignRunnerException) {
+            ui.displayError(assignRunnerException.getMessage());
+        }
+
+
+        // Set lane number
+
+        int lane = 0;
+
+        do {
+            try {
+
+                ui.displayPrompt("Enter lane number: ");
+                lane = ui.readInputInt();
+
+                trackManager.isLaneAvailabile(lane);
+
+            } catch (NumberFormatException nfe) {
+                ui.displayError("Invalid lane number");
+                lane = 0;
+            } catch (AssignRunnerException assignRunnerException) {
+                ui.displayError(assignRunnerException.getMessage());
+                lane = 0;
+            }
+
+        } while (lane == 0);
+
+        // Set runner's name
+
+        ui.displayPrompt("Enter runner's name: ");
+        String runnerName = ui.readInputString();
+
+        // Store lane and runner assignment
+
+        try {
+
+            trackManager.assignRunner(lane, runnerName);
+
+        } catch (AssignRunnerException assignRunnerException) {
+            ui.displayError(assignRunnerException.getMessage());
+        }
+
+        //--
+
+        displayLaneAssignments();
+
+    }
+
+    private void resetLaneAssignments() {
+        ui.displayTitle("Lane Assignments Reset");
+        trackManager.resetLaneAssignments();
+        printLaneAssignments();
+    }
+
+    private void displayLaneAssignments() {
+        ui.displayTitle("Current Lane Assignments");
+        printLaneAssignments();
     }
 
     private void printLaneAssignments() {
 
-        System.out.print("\nCurrent Lane Assignments\n========================\n");
-
-        String[] laneAssignments = track.getLaneAssignments();
-        for (int i = 0; i < laneAssignments.length ; i++) {
-            System.out.print(" " + (i+1) + " : " + (laneAssignments[i] != null ? laneAssignments[i] : "Open")  + "\n");
+        String[] laneAssignments = trackManager.getLaneAssignments();
+        for (int i = 0; i < laneAssignments.length; i++) {
+            ui.display(" " + (i + 1) + " : " + (laneAssignments[i] != null ? laneAssignments[i] : "*"));
         }
 
-        System.out.print("========================\n");
-
     }
-
-    private String readInputString(String prompt) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print(prompt);
-        return br.readLine();
-    }
-
-    private int readInputInt(String prompt) throws IOException {
-        return Integer.parseInt(readInputString(prompt));
-    }
-
 
     public static void main(String[] args) {
+
         Main m = new Main();
-        try {
-            m.runTrackAssignment();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        m.mainLoop();
+
     }
 
 }
