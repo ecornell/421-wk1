@@ -10,7 +10,7 @@ public class Main {
 
         ui.display("========================================");
         ui.display("|    Track Lane Assignment Manager     |");
-        ui.display("|    POS-421 - Wk1 - Elijah Cornell    |");
+        ui.display("|    PRG-421 - Wk1 - Elijah Cornell    |");
         ui.display("========================================");
 
         String menuSelection;
