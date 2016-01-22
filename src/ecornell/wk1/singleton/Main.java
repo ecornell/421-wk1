@@ -114,7 +114,6 @@ public class Main {
         // Prompt for and validate lane number
 
         int lane;
-
         do {
             try {
 

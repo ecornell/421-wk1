@@ -82,9 +82,9 @@ public class TrackManager {
     }
 
     /**
-     * Check if a runner has already been assign to a lane
+     * Check if a runner has already been assigned to a lane
      *
-     * @param laneNumber lane number
+     * @param laneNumber Lane number
      * @return boolean
      * @throws AssignRunnerException
      */
